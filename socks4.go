@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	errors "github.com/bdandy/go-errors"
+	"golang.org/x/net/context"
 	"golang.org/x/net/proxy"
 )
 
@@ -59,14 +60,24 @@ type socks4 struct {
 
 // Dial implements proxy.Dialer interface
 func (s socks4) Dial(network, addr string) (c net.Conn, err error) {
+	return s.DialContext(context.Background(), network, addr)
+}
+
+func (s socks4) DialContext(context context.Context, network, addr string) (c net.Conn, err error) {
 	if network != "tcp" && network != "tcp4" {
 		return nil, ErrWrongNetwork
 	}
 
-	c, err = s.dialer.Dial(network, s.url.Host)
+	if fn, ok := s.dialer.(proxy.ContextDialer); ok {
+		c, err = fn.DialContext(context, network, s.url.Host)
+	} else {
+		c, err = s.dialer.Dial(network, s.url.Host)
+	}
+
 	if err != nil {
 		return nil, ErrDialFailed.New().Wrap(err)
 	}
+
 	// close connection later if we got an error
 	defer func() {
 		if err != nil && c != nil {
