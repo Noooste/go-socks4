@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/bdandy/go-socks4"
+	"github.com/Noooste/go-socks4"
 
 	"golang.org/x/net/proxy"
 )

@@ -1,8 +1,8 @@
-module github.com/bdandy/go-socks4
+module github.com/Noooste/go-socks4
 
-go 1.13
+go 1.24
 
 require (
 	github.com/bdandy/go-errors v1.2.2
-	golang.org/x/net v0.0.0-20211104170005-ce137452f963
+	golang.org/x/net v0.43.0
 )
